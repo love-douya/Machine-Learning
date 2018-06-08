@@ -1,3 +1,5 @@
+# 单层二分类感知机模型
+
 import copy
 
 trainint_set = [[(3, 3), 1], [(4, 3), 1], [(1, 1), -1]]
@@ -15,8 +17,29 @@ def update(item):
 def judge(item):
     res = 0
     for i in range(len(item[0])):
+        #对应公式w * x
         res += item[0][i] * w[i]
-    #对应公式w * x
-    res += b
     #对应公式w * x + b
-    
+    res += b
+    #对应公式yi(w * x + b)
+    res *= item[1]
+    return res
+
+def check():
+    flag = False
+    for item in trainint_set:
+        if judge(item) <= 0: #如果还有误分类点，那么小于等于0
+            flag = True
+            update(item)
+    return flag
+
+if __name__ == '__main__':
+    flag = False
+    for i in range(1000):
+        if not check():
+            flag = True
+            break
+    if flag:
+        print('在1000次内分类正确')
+    else:
+        print('1000次内分类失败')
