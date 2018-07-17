@@ -3,9 +3,8 @@ import pandas
 import re
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import CountVectorizer
-import nltk
 
-nltk.download("stopwords")
+#nltk.download("stopwords")
 
 headlines = {
    "PretzelBros, airbnb for people who like pretzels, raises $2 million",
@@ -54,6 +53,8 @@ unique_words = [w for w in unique_words if w not in stopwords]
 #Will lowercase everything, and ignore all punctuation by default.
 #It will also remove stop words.
 vectorizer = CountVectorizer(lowercase = "True", stop_words = "english")
+
 matrix = vectorizer.fit_transform(headlines)
 # We created our bag of words matrix with far fewer commands.
 print(matrix.todense())
+
