@@ -216,3 +216,41 @@ Soundex and Metaphone are two main phonetic algorithms used for this purpose.
 Python’s module Fuzzy is used to compute soundex strings for different words.
 '''
 
+
+'''
+C. Flexible String Matching – A complete text matching system includes different algorithms pipelined together to compute variety of text variations. 
+Regular expressions are really helpful for this purposes as well. 
+Another common techniques include – exact string matching, lemmatized matching, and compact matching (takes care of spaces, punctuation’s, slangs etc).
+
+D. Cosine Similarity – W hen the text is represented as vector notation, a general cosine similarity can also be applied in order to measure vectorized similarity. 
+Following code converts a text to vectors (using term frequency) and applies cosine similarity to provide closeness among two text.
+'''
+
+import math
+from collections import Counter
+
+def get_cosine(vec1, vec2):
+    common = set(vec1.keys()) & set(vec2.keys())
+    numerator = sum([vec1[x] * vec2[x] for x in common])
+
+    sum1 = sum([vec1[x] ** 2 for x in vec1.keys()])
+    sum2 = sum([vec2[x] ** 2 for x in vec2.keys()])
+    denominator = math.sqrt(sum1) * math.sqrt(sum2)
+
+    if not denominator:
+        return 0.0
+    else:
+        return float(numerator) / denominator
+
+def text_to_vector(text):
+    words = text.split()
+    return Counter(words)
+
+text1 = 'This is an article on analytics vidhya'
+text2 = 'article on analytics vidhya is about natural language processing'
+
+vector1 = text_to_vector(text1)
+vector2 = text_to_vector(text2)
+cosine = get_cosine(vector1, vector2)
+print(cosine)
+
