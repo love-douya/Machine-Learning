@@ -14,3 +14,11 @@ document = nlp(document)
 # Tokenization
 
 print(document[0])
+
+# last token of the doc
+print(document[len(document) - 5])
+
+# get all tags
+all_tags = {w.pos: w.pos_ for w in document}
+>> {97: u'SYM', 98: u'VERB', 99: u'X', 101: u'SPACE', }
+
