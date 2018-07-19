@@ -20,5 +20,16 @@ print(document[len(document) - 5])
 
 # get all tags
 all_tags = {w.pos: w.pos_ for w in document}
->> {97: u'SYM', 98: u'VERB', 99: u'X', 101: u'SPACE', }
+print(all_tags)
 
+# define some parameters
+noisy_pos_tags = ['PROP']
+min_token_length = 2
+
+# Function to check if the token is a noise or not
+def isNoise(token):
+    is_noise = False
+    if token.pos_  in noisy_pos_tags:
+        is_noise = True
+    elif token.is_stop == True:
+        is_noise = True
