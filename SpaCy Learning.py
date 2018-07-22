@@ -1,4 +1,5 @@
 import spacy
+from nltk.corpus import stopwords
 
 # SpaCy Pipeline and Properties
 # load the default model which is english-core-web.
@@ -113,7 +114,81 @@ others = list({w for w in parser.vocab if w.has_vector and w.orth_.islower() and
 others.sort(key = lambda w: cosine(w.vector, apple.vector))
 others.reverse()
 
-print("top most similar words to apple:")
+#print("top most similar words to apple:")
 for word in others[:10]:
-    print(word.orth_)
+    pass
+    #print(word.orth_)
 
+# Machine Learning with text using Spacy
+from sklearn.feature_extraction.stop_words import ENGLISH_STOP_WORDS as stopwords
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.base import TransformerMixin
+from sklearn.metrics import accuracy_score
+from sklearn.pipeline import Pipeline
+from sklearn.svm import LinearSVC
+
+import string
+punctuations = string.punctuation
+
+from spacy.lang.en import English
+parser = English()
+
+# Custom Text classifer using learning 
+class predictors(TransformerMixin):
+    def transform(self, X, **transform_params):
+        return [clean_text(text) for text in X]
+    def fit(self, X, y = None, **fit_params):
+        return self
+    def get_params(self, deep = True):
+        return {}
+    
+# Basic utility function to clean the text
+def clean_text(text):
+    return text.strip().lower()
+
+'''
+Create a custom tokenizer function using spacy parser and some basic cleaning. 
+One thing to note here is that, the text features can be replaced with word vectors (especially beneficial in deep learning models)
+'''
+
+# Create spacy tokenizer that parses a sentence and generates tokens
+# these can also be replaced by word vectors
+
+def spacy_tokenizer(sentence):
+    tokens = parser(sentence)
+    tokens = [tok.lemma_.lower().strip() if tok.lemma_ != '-PRON-' else tok.lower_ for tok in tokens]
+    tokens = [tok for tok in tokens if (tok not in stopwords and tok not in punctuations)]
+    
+# create vectorizer object to generate feature vectors, we will use custom spacy's tokenizer
+vectorizer = CountVectorizer(tokenizer = spacy_tokenizer, ngram_range = (1, 1))
+classifier = LinearSVC()
+
+# Create the pipeline, load the data(sample here), and run the classifier model.
+pipe = Pipeline([("cleaner", predictors()), ('vectorizer', vectorizer), ('classifier', classifier)])
+
+# load sample data
+train = [('I love this sandwich.', 'pos'),
+         ('this is an amazing place!', 'pos'),
+         ('I feel very good about these beers.', 'pos'),
+         ('this is my best work.', 'pos'),
+         ('what an awesome view', 'pos'),
+         ('I do not like this restaurant', 'neg'),
+         ('I am tired of this stuff.', 'neg'),
+         ("I can't deal with this", 'neg'),
+         ('he is my sworn enemy!', 'neg'),          
+         ('my boss is horrible.', 'neg')] 
+
+test =   [('the beer was good.', 'pos'),     
+         ('I do not enjoy my job', 'neg'),
+         ("I ain't feelin dandy today.", 'neg'),
+         ("I feel amazing!", 'pos'),
+         ('Gary is a good friend of mine.', 'pos'),
+         ("I can't believe I'm doing this.", 'neg')]
+
+# Create model and measure accuracy
+# pipe.fit([x[0] for x in train], [x[1] for x in train])
+# pred_data = pipe.predict([x[0] for x in test])
+# for (sample, pred) in zip(test, pred_data):
+#     print(sample, pred)
+
+# print('Accuracy: ', accuracy_score)
