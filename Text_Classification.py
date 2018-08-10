@@ -45,5 +45,18 @@ xvalid_count = count_vect.transform(valid_x)
 # TF-IDF Vectors as features
 
 #word level tf-idf
-tfidf_vect = TfidfVectorizer(analyzer = 'word', token_pattern = r'\w{1, }', max_features = 5000)
-tfidf_vect.fit(trainDF['text'])
+# tfidf_vect = TfidfVectorizer(analyzer = 'word', token_pattern = r'\w{1, }', max_features = 5000)
+# tfidf_vect.fit(trainDF['text'])
+# xtrain_tfdif = tfdif_vect.transform(train_x)
+# xvalid_tfdif = tfdif_vect.transform(valid_x)
+
+# ngram level tf-idf 
+tfidf_vect_ngram = TfidfVectorizer(analyzer='word', token_pattern=r'\w{1,}', ngram_range=(2,3), max_features=5000)
+tfidf_vect_ngram.fit(trainDF['text'])
+xtrain_tfidf_ngram =  tfidf_vect_ngram.transform(train_x)
+xvalid_tfidf_ngram =  tfidf_vect_ngram.transform(valid_x)
+
+# character level tf-idf
+tfidf_vect_ngram_chars = TfidfVectorizer(analyzer = 'char', token_pattern = r'\w{1, }', ngram_range = (2, 3), max_features = 5000)
+tfidf_vect_ngram_chars.fit(trainDF['text'])
+
